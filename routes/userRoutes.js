@@ -9,6 +9,8 @@ router.post('/register', async (req, res) => {
     const user = new User(req.body);
     await user.save();
     console.log("Registered new user with _id =>", user._id.toString());
+    // On successful registration, also initiate a session
+    req.session.userId = user._id;
     res.status(201).send({ user });
   } catch (error) {
     switch (error.code) {
@@ -39,11 +41,22 @@ router.post('/login', async (req, res) => {
     }
 
     console.log("Logged in user with _id =>", user._id.toString());
-    // TODO:  User matched, proceed with your login logic (e.g., generating a token)
-    res.status(200).send({ message: 'Logged in successfully' });
+    // On successful registration, also initiate a session
+    req.session.userId = user._id;
+    res.status(201).send({ user });
   } catch (error) {
     res.status(500).send(error);
   }
+});
+
+router.post('/logout', (req, res) => {
+  console.log("Logging out user with _id =>", req.session.userId);
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).send('Could not log out, please try again.');
+    }
+    res.status(200).send({ message: 'Logged out successfully' });
+  });
 });
 
 module.exports = router;

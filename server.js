@@ -1,7 +1,8 @@
 const express = require('express');
 require('dotenv').config();
 const mongoose = require('mongoose');
-const cors = require('cors'); // Import CORS package
+const cors = require('cors');
+const session = require('express-session');  // Import session package
 const userRoutes = require('./routes/userRoutes');
 
 // MongoDB Connection
@@ -19,12 +20,20 @@ app.use(cors());
 // Middleware for parsing JSON bodies
 app.use(express.json());
 
+// Session Middleware
+app.use(session({
+  secret: process.env.SERVER_SESSION_TOKEN,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // Set to true if using https
+}));
+
 // User Routes
 app.use('/users', userRoutes);
 
 // Root Route
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('Server is live!');
 });
 
 // Start the Server
