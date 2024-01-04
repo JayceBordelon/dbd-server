@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const session = require('express-session');  // Import session package
 const userRoutes = require('./routes/userRoutes');
+const gptRoutes = require('./routes/gptRoutes');
 
 // MongoDB Connection
 const mongoDBUri = process.env.MONGO_URI;
@@ -30,6 +31,9 @@ app.use(session({
 
 // User Routes
 app.use('/users', userRoutes);
+
+// GPT Routes
+app.use('/gpt', gptRoutes);
 
 // Root Route
 app.get('/', (req, res) => {
